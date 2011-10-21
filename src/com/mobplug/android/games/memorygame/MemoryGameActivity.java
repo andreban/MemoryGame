@@ -2,6 +2,9 @@ package com.mobplug.android.games.memorygame;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 import com.mobplug.android.games.framework.GameSurfaceView3D;
 import com.mobplug.android.games.memorygame.game.MemoryGame;
@@ -16,9 +19,19 @@ public class MemoryGameActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GameSurfaceView3D surfaceView = new GameSurfaceView3D(this);
+        final GameSurfaceView3D surfaceView = new GameSurfaceView3D(this);
         surfaceView.setEGLContextClientVersion(2);
-        MemoryGame game = new MemoryGame();
+        final MemoryGame game = new MemoryGame();
+        surfaceView.setOnTouchListener(new OnTouchListener() {			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					game.click(event.getX(), surfaceView.getHeight() - event.getY());
+					return true;
+				}
+				return false;
+			}
+		});        
         GameRenderer<MemoryGame> renderer = new MemoryRenderer(this, surfaceView, game);
         gameRunnable = new BaseGameRunnable<MemoryGame>(renderer, game);
         setContentView(surfaceView);     

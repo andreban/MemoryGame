@@ -90,7 +90,7 @@ public class MemoryRenderer extends AndroidGameRenderer3D<MemoryGame> {
 				
 				modelViewStack.push();
 				modelViewStack.translate(myCard.getPosX(), myCard.getPosY(), 0);
-				modelViewStack.rotate(rotation, 0, 1, 0);
+				modelViewStack.rotate(myCard.getRotY(), 0, 1, 0);
 				
 				//draw front of the card
 //				shader.setUniform4("vColor", 0, 1, 0, 1);	

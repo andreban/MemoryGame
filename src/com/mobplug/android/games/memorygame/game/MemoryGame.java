@@ -29,7 +29,7 @@ public class MemoryGame extends BaseGame {
 
 	@Override
 	public void update(long gameTime) {
-		// TODO Auto-generated method stub
+		for (Card c: cards) c.update();
 
 	}
 	
@@ -45,6 +45,15 @@ public class MemoryGame extends BaseGame {
 		return cards[row * 4 + column];
 	}
 	
+	public void click(float x, float y) {
+		for (Card c: cards) {
+			if (Math.abs(x - c.getPosX()) <= c.getSize()
+					&& Math.abs(y - c.getPosY()) <= c.getSize()) {
+				c.flip();
+				break;
+			}
+		}
+	}
 	public void resize(float w, float h, float size) {
 		float paddingLeft = ((float)w - size * 5.5f)/2;
 		float paddingBottom = ((float)h - size * 4f)/2;		
