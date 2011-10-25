@@ -5,8 +5,8 @@ public class Card {
 	private static final float CLOSED_ROT = 180.0f;
 	private static final float ROTATION_STEP = 3.0f;
 	
-	private static enum State {
-		OPEN, CLOSED, OPENING, CLOSING
+	public static enum State {
+		OPEN, CLOSED, OPENING, CLOSING, MATCHED
 	}
 	//card number
 	private int number;
@@ -15,10 +15,12 @@ public class Card {
 	private float rotY = CLOSED_ROT;
 	private float size;
 	private State state = State.CLOSED;
+	private CardManager cardManager;
 	
-	public Card(int number) {
+	public Card(CardManager cardManager,  int number) {
 		this.number = number;
 		this.state = State.CLOSED;
+		this.cardManager = cardManager;
 	}
 
 	public int getNumber() {
@@ -57,12 +59,16 @@ public class Card {
 			case OPENING:
 				rotY -= ROTATION_STEP;
 				if (rotY <= OPEN_ROT) {
+					cardManager.removeTransitoinCard(this);
+					cardManager.addOpenCard(this);
 					state = State.OPEN;
 				}
 				break;
 			case CLOSING: {
 				rotY += ROTATION_STEP;
 				if (rotY >= CLOSED_ROT) {
+					cardManager.removeTransitoinCard(this);
+					cardManager.addClosedCard(this);					
 					state = State.CLOSED;
 				}
 				break;
@@ -70,12 +76,34 @@ public class Card {
 		}
 	}
 	
+	public void match() {
+		state = State.MATCHED;
+		rotY = OPEN_ROT;
+		cardManager.removeOpenCard(this);
+		cardManager.removeClosedCard(this);
+		cardManager.removeTransitoinCard(this);
+		cardManager.addMatchedCard(this);
+	}
 	public void flip() {
 		switch(state) {
 			case OPEN:
-			case OPENING: state = State.CLOSING; break;
+				cardManager.removeOpenCard(this);
+				cardManager.addTransitionCard(this);
+			case OPENING: {
+				state = State.CLOSING; 
+				break;				
+			}
 			case CLOSED:
-			case CLOSING: state = State.OPENING; break;				
+				cardManager.removeClosedCard(this);
+				cardManager.addTransitionCard(this);
+			case CLOSING: {
+				state = State.OPENING; 
+				break;				
+			}
 		}
 	}	
+	
+	public State getState() {
+		return this.state;
+	}
 }

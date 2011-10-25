@@ -1,24 +1,27 @@
 package com.mobplug.android.games.memorygame.game;
 
 import com.mobplug.games.framework.BaseGame;
+import com.mobplug.games.framework.interfaces.GameResult;
 
 public class MemoryGame extends BaseGame {
 	private static final long serialVersionUID = 1L;
 	
 	private static final int NUM_ROWS = 3;
 	private static final int NUM_COLUMNS = 4;
+	private CardManager cardManager = new CardManager();
+	
 	private Card[] cards = {
-			new Card(0), new Card(0),
-			new Card(1), new Card(1),
-			new Card(2), new Card(2),
-			new Card(3), new Card(3),
-			new Card(4), new Card(4),
-			new Card(5), new Card(5),			
+			new Card(cardManager, 0), new Card(cardManager, 0),
+			new Card(cardManager, 1), new Card(cardManager, 1),
+			new Card(cardManager, 2), new Card(cardManager, 2),
+			new Card(cardManager, 3), new Card(cardManager, 3),
+			new Card(cardManager, 4), new Card(cardManager, 4),
+			new Card(cardManager, 5), new Card(cardManager, 5),			
 	};
 	
 
 	public MemoryGame() {
- 
+		newGame();
 	}
 	
 	@Override
@@ -26,11 +29,41 @@ public class MemoryGame extends BaseGame {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
+	@Override
+	public void newGame() {
+		for (int i = 0; i < cards.length; i++) {
+			Card tmp = cards[i];
+			int randomPos = (int)(Math.random() * cards.length);
+			cards[i] = cards[randomPos];
+			cards[randomPos] = tmp;
+		}
+		super.newGame();
+	}
+	
 	@Override
 	public void update(long gameTime) {
-		for (Card c: cards) c.update();
-
+		if (cards.length == cardManager.getMatchedCards().size()) {
+			gameOver(GameResult.WIN);
+		}
+				
+		for (Card c: cards) {
+			c.update();
+				
+		}		
+		
+		if (cardManager.getOpenCards().size() == 2) {
+			Card c1 = cardManager.getOpenCards().get(0);
+			Card c2 = cardManager.getOpenCards().get(1);
+			if (c1.getNumber() == c2.getNumber()) {
+				c1.match();
+				c2.match();
+			} else {
+				c1.flip();
+				c2.flip();
+			}
+		}
+		
 	}
 	
 	public int getNumRows() {
@@ -46,6 +79,8 @@ public class MemoryGame extends BaseGame {
 	}
 	
 	public void click(float x, float y) {
+		//TODO this method should run in the game Thread!!!
+		if (cardManager.getOpenCards().size() + cardManager.getTransitionCards().size() >= 2) return;
 		for (Card c: cards) {
 			if (Math.abs(x - c.getPosX()) <= c.getSize()
 					&& Math.abs(y - c.getPosY()) <= c.getSize()) {
