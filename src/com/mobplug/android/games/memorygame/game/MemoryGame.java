@@ -9,7 +9,7 @@ public class MemoryGame extends BaseGame {
 	private static final int NUM_ROWS = 3;
 	private static final int NUM_COLUMNS = 4;
 	private CardManager cardManager = new CardManager();
-	
+	private long gameTime = 0;
 	private Card[] cards = {
 			new Card(cardManager, 0), new Card(cardManager, 0),
 			new Card(cardManager, 1), new Card(cardManager, 1),
@@ -33,16 +33,24 @@ public class MemoryGame extends BaseGame {
 	@Override
 	public void newGame() {
 		for (int i = 0; i < cards.length; i++) {
-			Card tmp = cards[i];
+			Card tmp = cards[i];			
 			int randomPos = (int)(Math.random() * cards.length);
-			cards[i] = cards[randomPos];
+			cards[i] = cards[randomPos];						
 			cards[randomPos] = tmp;
+			
+//			float tmpx = cards[i].getPosX();
+//			float tmpy = cards[i].getPosY();
+//			cards[i].setPosX(cards[randomPos].getPosX());
+
+			
 		}
+		for (Card c: cards)c.reset();		
 		super.newGame();
 	}
 	
 	@Override
 	public void update(long gameTime) {
+		this.gameTime = gameTime;
 		if (cards.length == cardManager.getMatchedCards().size()) {
 			gameOver(GameResult.WIN);
 		}
@@ -79,6 +87,7 @@ public class MemoryGame extends BaseGame {
 	}
 	
 	public void click(float x, float y) {
+		if (isPaused()) return;
 		//TODO this method should run in the game Thread!!!
 		if (cardManager.getOpenCards().size() + cardManager.getTransitionCards().size() >= 2) return;
 		for (Card c: cards) {
@@ -102,6 +111,10 @@ public class MemoryGame extends BaseGame {
 				c.setSize(size);
 			}
 		}
+	}
+	
+	public long getGameTime() {
+		return this.gameTime;
 	}
 
 }

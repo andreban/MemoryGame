@@ -103,6 +103,11 @@ public class Card {
 		}
 	}	
 	
+	public void reset() {
+		this.state = State.CLOSED;
+		this.rotY = CLOSED_ROT;
+	}
+	
 	public State getState() {
 		return this.state;
 	}
