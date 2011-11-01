@@ -63,7 +63,7 @@ public class MemoryRenderer extends AndroidGameRenderer3D<MemoryGame> {
 		modelViewStack.push();
 		
 		shader.useShader();
-		shader.setUniform4("vColor", 1, 0, 0, 1);
+		shader.setUniform4("vColor", 0.7f, 0.7f, 0.7f, 1);
 
 		//draw the background!s
 		modelViewStack.push();
@@ -109,7 +109,16 @@ public class MemoryRenderer extends AndroidGameRenderer3D<MemoryGame> {
 				modelViewStack.pop();
 			}
 		}
-		rotation += 0.5;		
+		rotation += 0.5;	
+		
+		if (game.isPaused()) {
+			//Draw paused!!
+		}
+		
+		if (game.isGameOver()) {			
+			//draw game Over text
+		}
+		
 		modelViewStack.pop();
 		
 	}

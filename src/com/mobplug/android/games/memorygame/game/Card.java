@@ -1,5 +1,6 @@
 package com.mobplug.android.games.memorygame.game;
 
+
 public class Card {
 	private static final float OPEN_ROT = 0.0f;
 	private static final float CLOSED_ROT = 180.0f;
@@ -27,6 +28,10 @@ public class Card {
 		return number;
 	}
 
+	public void setNumber(int number) {
+		this.number = number;
+	}
+	
 	public float getPosX() {
 		return posX;
 	}
@@ -106,6 +111,10 @@ public class Card {
 	public void reset() {
 		this.state = State.CLOSED;
 		this.rotY = CLOSED_ROT;
+		cardManager.addClosedCard(this);
+		cardManager.removeOpenCard(this);
+		cardManager.removeTransitoinCard(this);
+		cardManager.removeMatchedCard(this);
 	}
 	
 	public State getState() {

@@ -36,6 +36,9 @@ public class CardManager {
 		transitionCards.remove(c);
 	}
 	
+	public void removeMatchedCard(Card c) {
+		matchedCards.remove(c);
+	}
 	public void addMatchedCard(Card c) {
 		matchedCards.add(c);
 	}
