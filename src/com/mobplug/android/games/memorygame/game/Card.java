@@ -5,6 +5,7 @@ public class Card {
 	private static final float OPEN_ROT = 0.0f;
 	private static final float CLOSED_ROT = 180.0f;
 	private static final float ROTATION_STEP = 3.0f;
+	private static final long OPEN_TIMEOUT = 500;
 	
 	public static enum State {
 		OPEN, CLOSED, OPENING, CLOSING, MATCHED
@@ -17,6 +18,7 @@ public class Card {
 	private float size;
 	private State state = State.CLOSED;
 	private CardManager cardManager;
+	private long openTimeout = -1;
 	
 	public Card(CardManager cardManager,  int number) {
 		this.number = number;
@@ -59,14 +61,18 @@ public class Card {
 		this.size = size;
 	}
 			
-	public void update() {
+	public void update(long gameTime) {
 		switch(state) {
 			case OPENING:
-				rotY -= ROTATION_STEP;
+				if (rotY > OPEN_ROT)
+					rotY -= ROTATION_STEP;
 				if (rotY <= OPEN_ROT) {
-					cardManager.removeTransitoinCard(this);
-					cardManager.addOpenCard(this);
-					state = State.OPEN;
+					if (openTimeout == -1) openTimeout = gameTime + OPEN_TIMEOUT;
+					if (gameTime >= openTimeout) {
+						cardManager.removeTransitoinCard(this);
+						cardManager.addOpenCard(this);
+						state = State.OPEN;
+					}
 				}
 				break;
 			case CLOSING: {
@@ -103,6 +109,7 @@ public class Card {
 				cardManager.addTransitionCard(this);
 			case CLOSING: {
 				state = State.OPENING; 
+				openTimeout = -1;
 				break;				
 			}
 		}

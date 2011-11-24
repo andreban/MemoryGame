@@ -50,7 +50,7 @@ public class MemoryGame extends BaseGame {
 		}
 				
 		for (Card c: cards) {
-			c.update();
+			c.update(gameTime);
 				
 		}		
 		
