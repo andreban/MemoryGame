@@ -45,16 +45,19 @@ public class MemoryGameActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);            
         setContentView(R.layout.activity_game);
+
         FrameLayout v = (FrameLayout)findViewById(R.id.game);
+        v.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);        
         final GameSurfaceView3D surfaceView = new GameSurfaceView3D(this);
         surfaceView.setEGLContextClientVersion(2);
         game = new MemoryGame();
+   
         surfaceView.setOnTouchListener(new OnTouchListener() {			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {					
 					game.click(event.getX(), surfaceView.getHeight() - event.getY());
 					return true;
 				}
